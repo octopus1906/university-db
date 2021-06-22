@@ -13,6 +13,7 @@ int main()
         << "7. Sort student list by surname\n"
         << "8. Save data to the file\n"
         << "9. Read data from the file\n"
+        << "10. Run test function\n"
         << "Press any other button to exit\n";
 
     std::vector<Student> database{};
@@ -127,6 +128,12 @@ int main()
                     {
                         std::cerr << "Error: reading operation failed!" << std::endl;
                     }
+                    break;
+                }
+                case 10:
+                {
+                    std::cout << "Test result: " <<
+                         (testFunction() ? "OK\n" : "FAIL\n");
                     break;
                 }
                 default:
