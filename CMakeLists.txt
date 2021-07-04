@@ -12,4 +12,4 @@ set(sources
 
 add_executable(${PROJECT_NAME} ${sources})
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Wconversion)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra -Wpedantic -Wconversion)

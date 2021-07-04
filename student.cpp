@@ -15,21 +15,22 @@ void removeStudent(std::vector<Student>& database, const Student& student)
     }
 }
 
-void printRecord(Student& student)
+std::ostream& operator<<(std::ostream& os, const Student& student)
 {
-    std::cout << "Name: " << student.getFirstName() << std::endl;
-    std::cout << "Surname: " << student.getLastName() << std::endl;
-    std::cout << "Address: " << student.getAddress() << std::endl;
-    std::cout << "Student ID:: " << student.getStudentId() << std::endl;
-    std::cout << "Personal ID: " << student.getPersonalId() << std::endl;
-    std::cout << "Gender: " << student.getGender() << std::endl;
-    std::cout << std::endl;
+    os << "Name: " << student.getFirstName() << "\n";
+    os << "Surname: " << student.getLastName() << "\n";
+    os << "Address: " << student.getAddress() << "\n";
+    os << "Student ID:: " << student.getStudentId() << "\n";
+    os << "Personal ID: " << student.getPersonalId() << "\n";
+    os << "Gender: " << student.getGender() << "\n";
+    os << "\n";
+    return os;
 }
 
 void printDatabase(std::vector<Student>& database)
 {
     for (auto& rec : database) {
-        printRecord(rec);
+        std::cout << rec;
     }
 }
 

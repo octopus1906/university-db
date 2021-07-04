@@ -34,32 +34,20 @@ public:
     std::string getPersonalId(void) const { return personalId_; }
     std::string getGender(void) const { return gender_; }
 
-    bool operator==(const Student& stud1) const
+    bool operator==(const Student& rhs) const
     {
         return (
-            firstName_ == stud1.firstName_
-            && lastName_ == stud1.lastName_
-            && address_ == stud1.address_
-            && studentId_ == stud1.studentId_
-            && personalId_ == stud1.personalId_
-            && gender_ == stud1.gender_);
-    }
-
-    bool operator!=(const Student& stud1) const
-    {
-        return (
-            firstName_ != stud1.firstName_
-            || lastName_ != stud1.lastName_
-            || address_ != stud1.address_
-            || studentId_ != stud1.studentId_
-            || personalId_ != stud1.personalId_
-            || gender_ != stud1.gender_);
+            firstName_ == rhs.firstName_
+            && lastName_ == rhs.lastName_
+            && address_ == rhs.address_
+            && studentId_ == rhs.studentId_
+            && personalId_ == rhs.personalId_
+            && gender_ == rhs.gender_);
     }
 };
 
 void addStudent(std::vector<Student>& database, const Student& student);
 void removeStudent(std::vector<Student>& database, const Student& student);
-void printRecord(Student& student);
 void printDatabase(std::vector<Student>& database);
 Student& findByLastName(std::vector<Student>& database, const std::string& str);
 Student& findByPersonalId(std::vector<Student>& database, const std::string& personalId);
@@ -67,6 +55,7 @@ Student& findByStudentId(std::vector<Student>& database, const std::string& stud
 void sortByPersonalID(std::vector<Student>& database);
 void sortByLastName(std::vector<Student>& database);
 
+std::ostream& operator<<(std::ostream& os, const Student& student);
 ssize_t writeToFile(std::vector<Student>& database, const std::string fileName);
 ssize_t readFromFile(std::vector<Student>& databaseFile, const std::string fileName);
 

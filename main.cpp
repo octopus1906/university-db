@@ -2,23 +2,22 @@
 
 int main()
 {
-    std::cout << "*** Students database ***" << std::endl;
-    std::cout << "What'd you like to do?" << std::endl;
-    std::cout << "1. Initialize a student list\n"
-              << "2. Show current student list\n"
-              << "3. Remove student from the list\n"
-              << "4. Find student by surname\n"
-              << "5. Find student by personal id\n"
-              << "6. Sort student list by personal id\n"
-              << "7. Sort student list by surname\n"
-              << "8. Save data to the file\n"
-              << "9. Read data from the file\n"
-              << "10. Run test function\n"
-              << "Press any other button to exit\n";
-
     std::vector<Student> database{};
 
     while (1) {
+        std::cout << "\n*** Students database ***" << std::endl;
+        std::cout << "What'd you like to do?" << std::endl;
+        std::cout << "1. Initialize a student list\n"
+                  << "2. Show current student list\n"
+                  << "3. Remove student from the list\n"
+                  << "4. Find student by surname\n"
+                  << "5. Find student by personal id\n"
+                  << "6. Sort student list by personal id\n"
+                  << "7. Sort student list by surname\n"
+                  << "8. Save data to the file\n"
+                  << "9. Read data from the file\n"
+                  << "10. Run test function\n"
+                  << "Press any other button to exit\n";
         try {
             size_t option{};
             std::cout << "Choose one option: ";
@@ -60,7 +59,7 @@ int main()
                 std::string surname{};
                 std::cin >> surname;
                 try {
-                    printRecord(findByLastName(database, surname));
+                    std::cout << findByLastName(database, surname);
                 } catch (const std::out_of_range& e) {
                     std::cerr << "Error: " << e.what() << std::endl;
                 }
@@ -72,7 +71,7 @@ int main()
                 std::cin >> personalId;
                 if (validatePersonalId(personalId)) {
                     try {
-                        printRecord(findByPersonalId(database, personalId));
+                        std::cout << findByPersonalId(database, personalId);
                     } catch (const std::out_of_range& e) {
                         std::cerr << "Error: " << e.what() << std::endl;
                     }

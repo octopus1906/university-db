@@ -23,7 +23,7 @@ bool testFunction(void)
     testDatabaseRef.push_back(studKarol);
     testDatabaseRef.push_back(studEla);
 
-    if (testDatabase != testDatabaseRef) {
+    if (!(testDatabase == testDatabaseRef)) {
         std::cout << "Test: add student failed\n";
         return false;
     }
@@ -44,7 +44,7 @@ bool testFunction(void)
     //test searching by surname
     /////////////////////////////////////
     try {
-        if (findByLastName(testDatabase, "Cygan") != studJola) {
+        if (!(findByLastName(testDatabase, "Cygan") == studJola)) {
             std::cout << "Test: search by last name failed\n";
             return false;
         }
@@ -57,7 +57,7 @@ bool testFunction(void)
     //test searching by personal ID
     /////////////////////////////////////
     try {
-        if (findByPersonalId(testDatabase, "83081899446") != studMarcin) {
+        if (!(findByPersonalId(testDatabase, "83081899446") == studMarcin)) {
             std::cout << "Test: search by personal ID failed\n";
             return false;
         }
@@ -70,7 +70,7 @@ bool testFunction(void)
     //test searching by student ID
     /////////////////////////////////////
     try {
-        if (findByStudentId(testDatabase, "333333") != studKarol) {
+        if (!(findByStudentId(testDatabase, "333333") == studKarol)) {
             std::cout << "Test: search by student ID failed\n";
             return false;
         }
