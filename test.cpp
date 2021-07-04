@@ -23,8 +23,7 @@ bool testFunction(void)
     testDatabaseRef.push_back(studKarol);
     testDatabaseRef.push_back(studEla);
 
-    if (testDatabase != testDatabaseRef)
-    {
+    if (testDatabase != testDatabaseRef) {
         std::cout << "Test: add student failed\n";
         return false;
     }
@@ -36,8 +35,7 @@ bool testFunction(void)
 
     testDatabaseRef.pop_back();
 
-    if (testDatabase != testDatabaseRef)
-    {
+    if (testDatabase != testDatabaseRef) {
         std::cout << "Test: remove student failed\n";
         return false;
     }
@@ -46,13 +44,11 @@ bool testFunction(void)
     //test searching by surname
     /////////////////////////////////////
     try {
-        if (findByLastName(testDatabase, "Cygan") != studJola)
-        {
+        if (findByLastName(testDatabase, "Cygan") != studJola) {
             std::cout << "Test: search by last name failed\n";
             return false;
         }
-    }
-    catch (const std::out_of_range& e) {
+    } catch (const std::out_of_range& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return false;
     }
@@ -61,13 +57,11 @@ bool testFunction(void)
     //test searching by personal ID
     /////////////////////////////////////
     try {
-        if (findByPersonalId(testDatabase, "83081899446") != studMarcin)
-        {
+        if (findByPersonalId(testDatabase, "83081899446") != studMarcin) {
             std::cout << "Test: search by personal ID failed\n";
             return false;
         }
-    }
-    catch (const std::out_of_range& e) {
+    } catch (const std::out_of_range& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return false;
     }
@@ -76,13 +70,11 @@ bool testFunction(void)
     //test searching by student ID
     /////////////////////////////////////
     try {
-        if (findByStudentId(testDatabase, "333333") != studKarol)
-        {
+        if (findByStudentId(testDatabase, "333333") != studKarol) {
             std::cout << "Test: search by student ID failed\n";
             return false;
         }
-    }
-    catch (const std::out_of_range& e) {
+    } catch (const std::out_of_range& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return false;
     }
@@ -92,8 +84,7 @@ bool testFunction(void)
     /////////////////////////////////////
     sortByPersonalID(testDatabase);
     std::reverse(testDatabaseRef.begin(), testDatabaseRef.end());
-    if (testDatabase != testDatabaseRef)
-    {
+    if (testDatabase != testDatabaseRef) {
         std::cout << "Test: sort by personal ID failed\n";
         return false;
     }
@@ -102,9 +93,8 @@ bool testFunction(void)
     //test sorting by surname
     /////////////////////////////////////
     sortByLastName(testDatabase);
-    std::iter_swap(testDatabaseRef.begin(), testDatabaseRef.begin()+1);
-    if (testDatabase != testDatabaseRef)
-    {
+    std::iter_swap(testDatabaseRef.begin(), testDatabaseRef.begin() + 1);
+    if (testDatabase != testDatabaseRef) {
         std::cout << "Test: sort by surname failed\n";
         return false;
     }
@@ -114,13 +104,11 @@ bool testFunction(void)
     /////////////////////////////////////
     try {
         removeStudent(testDatabase, findByStudentId(testDatabase, "333333"));
-    }
-    catch (const std::out_of_range& e) {
+    } catch (const std::out_of_range& e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
-    testDatabaseRef.erase(testDatabaseRef.begin()+1);
-    if (testDatabase != testDatabaseRef)
-    {
+    testDatabaseRef.erase(testDatabaseRef.begin() + 1);
+    if (testDatabase != testDatabaseRef) {
         std::cout << "Test: removing by student ID failed\n";
         return false;
     }
@@ -128,19 +116,16 @@ bool testFunction(void)
     /////////////////////////////////////
     //test file handling
     /////////////////////////////////////
-    if (-1 == writeToFile(testDatabase, "testBase.txt"))
-    {
+    if (-1 == writeToFile(testDatabase, "testBase.txt")) {
         std::cerr << "Error: writing operation failed!" << std::endl;
         return false;
     }
     testDatabaseRef.clear();
-    if (-1 == readFromFile(testDatabaseRef, "testBase.txt"))
-    {
+    if (-1 == readFromFile(testDatabaseRef, "testBase.txt")) {
         std::cerr << "Error: reading operation failed!" << std::endl;
         return false;
     }
-    if (testDatabase != testDatabaseRef)
-    {
+    if (testDatabase != testDatabaseRef) {
         std::cout << "Test: file handling failed\n";
         return false;
     }
@@ -149,8 +134,7 @@ bool testFunction(void)
     //test personal id validation
     /////////////////////////////////////
     if (0 == validatePersonalId("95062887786")
-        || 1 == validatePersonalId("95062887787"))
-    {
+        || 1 == validatePersonalId("95062887787")) {
         std::cout << "Test: personal id validation failed\n";
         return false;
     }
