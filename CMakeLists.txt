@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(universityDB)
 set(sources 
     main.cpp 
-    student.cpp 
+    utils.cpp 
     test.cpp
     )
 

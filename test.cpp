@@ -1,4 +1,7 @@
-#include "person.hpp"
+#include "Person.hpp"
+#include "Student.hpp"
+#include "Worker.hpp"
+#include "utils.hpp"
 
 bool testFunction(void)
 {

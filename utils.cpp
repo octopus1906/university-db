@@ -1,68 +1,18 @@
-#include "person.hpp"
+#include "utils.hpp"
 
+/*****************************************************************************/
 void addStudent(std::vector<std::shared_ptr<Person> >& database, const std::shared_ptr<Student> student)
 {
     database.push_back(student);
 }
 
+/*****************************************************************************/
 void addWorker(std::vector<std::shared_ptr<Person> >& database, const std::shared_ptr<Worker> worker)
 {
     database.push_back(worker);
 }
 
-void fulfillDatabase(std::vector<std::shared_ptr<Person> >& database)
-{
-    if (!database.empty() && database[0] != nullptr)
-        srand((unsigned int)time(NULL));
-
-    //draw number of students (1-5) and workers (1-5)
-    int studNum = rand() % 5 + 1;
-    int workNum = rand() % 5 + 1;
-
-    std::vector<std::string> firstNames = { "Jan", "Karol", "Marcin", "Jola", "Ela", "Ewa" };
-    std::vector<std::string> lastNames = { "Kowalski", "Dygant", "Krawczyk", "Mroczek", "Cygan", "Kowal" };
-    std::vector<std::string> addresses = { "ul.Cwiartki", "al.Gwiazd", "al.Jerozolimskie", "ul.Bursztynowa", "ul.Wolska", "ul.Woronicza" };
-    std::vector<std::string> personalIds = { "49072852861", "78081951876", "83081899446", "72082968248", "04283145461",
-        "95062887786", "95033072566", "95012578696", "97111622942", "98112038495" };
-    std::vector<std::string> genders = { "M", "F" };
-    std::vector<std::string> studentIds = { "111444", "987789", "222333", "777766", "333333", "111222" };
-    std::vector<std::string> salary = { "1200$", "1000$", "2100$", "5000$" };
-
-    ssize_t i = 0;
-    while (i < studNum) {
-        size_t idFirstName = rand() % 6;
-        size_t idLastName = rand() % 6;
-        size_t idAddress = rand() % 6;
-        size_t idPersonalId = rand() % (10 - i);
-        size_t idStudentId = rand() % (6 - i);
-        size_t idGender{};
-        (idFirstName < 3) ? idGender = 0 : idGender = 1;
-
-        addStudent(database, std::make_shared<Student>(firstNames[idFirstName], lastNames[idLastName],
-                                 addresses[idAddress], studentIds[idStudentId], personalIds[idPersonalId], genders[idGender]));
-        //remove entries from vectors to avoid same pID or sID used several times
-        personalIds.erase(personalIds.begin() + idPersonalId);
-        studentIds.erase(studentIds.begin() + idStudentId);
-        ++i;
-    }
-
-    ssize_t j = 0;
-    while (j < workNum) {
-        size_t idFirstName = rand() % 6;
-        size_t idLastName = rand() % 6;
-        size_t idAddress = rand() % 6;
-        size_t idPersonalId = rand() % (10 - studNum - j);
-        size_t idSalary = rand() % 4;
-        size_t idGender{};
-        (idFirstName < 3) ? idGender = 0 : idGender = 1;
-
-        addWorker(database, std::make_shared<Worker>(firstNames[idFirstName], lastNames[idLastName],
-                                addresses[idAddress], salary[idSalary], personalIds[idPersonalId], genders[idGender]));
-        personalIds.erase(personalIds.begin() + idPersonalId);
-        ++j;
-    }
-}
-
+/*****************************************************************************/
 void removeStudent(std::vector<std::shared_ptr<Person> >& database, const std::shared_ptr<Person> student)
 {
     for (auto it = database.begin(); it < database.end(); ++it) {
@@ -73,6 +23,7 @@ void removeStudent(std::vector<std::shared_ptr<Person> >& database, const std::s
     }
 }
 
+/*****************************************************************************/
 void removeAllStudents(std::vector<std::shared_ptr<Person> >& database)
 {
     auto it = database.begin();
@@ -85,6 +36,15 @@ void removeAllStudents(std::vector<std::shared_ptr<Person> >& database)
     }
 }
 
+/*****************************************************************************/
+void printDatabase(std::vector<std::shared_ptr<Person> >& database)
+{
+    for (auto& rec : database) {
+        std::cout << *rec;
+    }
+}
+
+/*****************************************************************************/
 std::shared_ptr<Person> findByStudentId(std::vector<std::shared_ptr<Person> >& database, const std::string& studentId)
 {
     for (auto& rec : database) {
@@ -95,13 +55,7 @@ std::shared_ptr<Person> findByStudentId(std::vector<std::shared_ptr<Person> >& d
     throw std::out_of_range("studentID \"" + studentId + "\" has not been found");
 }
 
-void printDatabase(std::vector<std::shared_ptr<Person> >& database)
-{
-    for (auto& rec : database) {
-        std::cout << *rec;
-    }
-}
-
+/*****************************************************************************/
 std::shared_ptr<Person> findByLastName(std::vector<std::shared_ptr<Person> >& database, const std::string& str)
 {
     for (auto& rec : database) {
@@ -112,6 +66,7 @@ std::shared_ptr<Person> findByLastName(std::vector<std::shared_ptr<Person> >& da
     throw std::out_of_range("name \"" + str + "\" has not been found");
 }
 
+/*****************************************************************************/
 std::shared_ptr<Person> findByPersonalId(std::vector<std::shared_ptr<Person> >& database, const std::string& personalId)
 {
     for (auto& rec : database) {
@@ -122,6 +77,7 @@ std::shared_ptr<Person> findByPersonalId(std::vector<std::shared_ptr<Person> >& 
     throw std::out_of_range("personalID \"" + personalId + "\" has not been found");
 }
 
+/*****************************************************************************/
 struct lessPersonalId {
     inline bool operator()(const std::shared_ptr<Person> lhs, const std::shared_ptr<Person> rhs)
     {
@@ -137,6 +93,7 @@ void sortByPersonalID(std::vector<std::shared_ptr<Person> >& database)
     }
 }
 
+/*****************************************************************************/
 struct lessLastName {
     inline bool operator()(const std::shared_ptr<Person> lhs, const std::shared_ptr<Person> rhs)
     {
@@ -152,6 +109,7 @@ void sortByLastName(std::vector<std::shared_ptr<Person> >& database)
     }
 }
 
+/*****************************************************************************/
 struct lessSalary {
     inline bool operator()(const std::shared_ptr<Person> lhs, const std::shared_ptr<Person> rhs)
     {
@@ -167,6 +125,7 @@ void sortBySalary(std::vector<std::shared_ptr<Person> >& database)
     }
 }
 
+/*****************************************************************************/
 void changeSalary(std::shared_ptr<Person>& person, std::string salary)
 {
     try {
@@ -177,6 +136,7 @@ void changeSalary(std::shared_ptr<Person>& person, std::string salary)
     }
 }
 
+/*****************************************************************************/
 ssize_t writeToFile(std::vector<std::shared_ptr<Person> >& database, const std::string fileName)
 {
     std::ofstream fileWrite(fileName);
@@ -193,6 +153,7 @@ ssize_t writeToFile(std::vector<std::shared_ptr<Person> >& database, const std::
     return 0;
 }
 
+/*****************************************************************************/
 ssize_t readFromFile(std::vector<std::shared_ptr<Person> >& databaseFile, const std::string fileName)
 {
     std::ifstream fileRead(fileName);
@@ -271,6 +232,7 @@ ssize_t readFromFile(std::vector<std::shared_ptr<Person> >& databaseFile, const 
     return 0;
 }
 
+/*****************************************************************************/
 bool validatePersonalId(const std::string& personalId)
 {
     if (personalId.size() < 11) {
@@ -320,6 +282,61 @@ bool validatePersonalId(const std::string& personalId)
     return (numbers[10] == checksum);
 }
 
+/*****************************************************************************/
+void fulfillDatabase(std::vector<std::shared_ptr<Person> >& database)
+{
+    if (!database.empty() && database[0] != nullptr)
+        srand((unsigned int)time(NULL));
+
+    //draw number of students (1-5) and workers (1-5)
+    int studNum = rand() % 5 + 1;
+    int workNum = rand() % 5 + 1;
+
+    std::vector<std::string> firstNames = { "Jan", "Karol", "Marcin", "Jola", "Ela", "Ewa" };
+    std::vector<std::string> lastNames = { "Kowalski", "Dygant", "Krawczyk", "Mroczek", "Cygan", "Kowal" };
+    std::vector<std::string> addresses = { "ul.Cwiartki", "al.Gwiazd", "al.Jerozolimskie", "ul.Bursztynowa", "ul.Wolska", "ul.Woronicza" };
+    std::vector<std::string> personalIds = { "49072852861", "78081951876", "83081899446", "72082968248", "04283145461",
+        "95062887786", "95033072566", "95012578696", "97111622942", "98112038495" };
+    std::vector<std::string> genders = { "M", "F" };
+    std::vector<std::string> studentIds = { "111444", "987789", "222333", "777766", "333333", "111222" };
+    std::vector<std::string> salary = { "1200$", "1000$", "2100$", "5000$" };
+
+    ssize_t i = 0;
+    while (i < studNum) {
+        size_t idFirstName = rand() % 6;
+        size_t idLastName = rand() % 6;
+        size_t idAddress = rand() % 6;
+        size_t idPersonalId = rand() % (10 - i);
+        size_t idStudentId = rand() % (6 - i);
+        size_t idGender{};
+        (idFirstName < 3) ? idGender = 0 : idGender = 1;
+
+        addStudent(database, std::make_shared<Student>(firstNames[idFirstName], lastNames[idLastName],
+                                 addresses[idAddress], studentIds[idStudentId], personalIds[idPersonalId], genders[idGender]));
+        //remove entries from vectors to avoid same pID or sID used several times
+        personalIds.erase(personalIds.begin() + idPersonalId);
+        studentIds.erase(studentIds.begin() + idStudentId);
+        ++i;
+    }
+
+    ssize_t j = 0;
+    while (j < workNum) {
+        size_t idFirstName = rand() % 6;
+        size_t idLastName = rand() % 6;
+        size_t idAddress = rand() % 6;
+        size_t idPersonalId = rand() % (10 - studNum - j);
+        size_t idSalary = rand() % 4;
+        size_t idGender{};
+        (idFirstName < 3) ? idGender = 0 : idGender = 1;
+
+        addWorker(database, std::make_shared<Worker>(firstNames[idFirstName], lastNames[idLastName],
+                                addresses[idAddress], salary[idSalary], personalIds[idPersonalId], genders[idGender]));
+        personalIds.erase(personalIds.begin() + idPersonalId);
+        ++j;
+    }
+}
+
+/*****************************************************************************/
 bool compareDatabases(std::vector<std::shared_ptr<Person> >& lhs, std::vector<std::shared_ptr<Person> >& rhs)
 {
     size_t sizeLhs = lhs.size();

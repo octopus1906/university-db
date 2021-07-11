@@ -1,4 +1,7 @@
-#include "person.hpp"
+#include "Student.hpp"
+#include "Worker.hpp"
+#include "Person.hpp"
+#include "utils.hpp"
 
 int main()
 {
