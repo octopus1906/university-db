@@ -1,11 +1,69 @@
-#include "student.hpp"
+#include "person.hpp"
 
-void addStudent(std::vector<Student>& database, const Student& student)
+void addStudent(std::vector<std::shared_ptr<Person> >& database, const std::shared_ptr<Student> student)
 {
     database.push_back(student);
 }
 
-void removeStudent(std::vector<Student>& database, const Student& student)
+void addWorker(std::vector<std::shared_ptr<Person> >& database, const std::shared_ptr<Worker> worker)
+{
+    database.push_back(worker);
+}
+
+void fulfillDatabase(std::vector<std::shared_ptr<Person> >& database)
+{
+    if (!database.empty() && database[0] != nullptr)
+        srand((unsigned int)time(NULL));
+
+    //draw number of students (1-5) and workers (1-5)
+    int studNum = rand() % 5 + 1;
+    int workNum = rand() % 5 + 1;
+
+    std::vector<std::string> firstNames = { "Jan", "Karol", "Marcin", "Jola", "Ela", "Ewa" };
+    std::vector<std::string> lastNames = { "Kowalski", "Dygant", "Krawczyk", "Mroczek", "Cygan", "Kowal" };
+    std::vector<std::string> addresses = { "ul.Cwiartki", "al.Gwiazd", "al.Jerozolimskie", "ul.Bursztynowa", "ul.Wolska", "ul.Woronicza" };
+    std::vector<std::string> personalIds = { "49072852861", "78081951876", "83081899446", "72082968248", "04283145461",
+        "95062887786", "95033072566", "95012578696", "97111622942", "98112038495" };
+    std::vector<std::string> genders = { "M", "F" };
+    std::vector<std::string> studentIds = { "111444", "987789", "222333", "777766", "333333", "111222" };
+    std::vector<std::string> salary = { "1200$", "1000$", "2100$", "5000$" };
+
+    ssize_t i = 0;
+    while (i < studNum) {
+        size_t idFirstName = rand() % 6;
+        size_t idLastName = rand() % 6;
+        size_t idAddress = rand() % 6;
+        size_t idPersonalId = rand() % (10 - i);
+        size_t idStudentId = rand() % (6 - i);
+        size_t idGender{};
+        (idFirstName < 3) ? idGender = 0 : idGender = 1;
+
+        addStudent(database, std::make_shared<Student>(firstNames[idFirstName], lastNames[idLastName],
+                                 addresses[idAddress], studentIds[idStudentId], personalIds[idPersonalId], genders[idGender]));
+        //remove entries from vectors to avoid same pID or sID used several times
+        personalIds.erase(personalIds.begin() + idPersonalId);
+        studentIds.erase(studentIds.begin() + idStudentId);
+        ++i;
+    }
+
+    ssize_t j = 0;
+    while (j < workNum) {
+        size_t idFirstName = rand() % 6;
+        size_t idLastName = rand() % 6;
+        size_t idAddress = rand() % 6;
+        size_t idPersonalId = rand() % (10 - studNum - j);
+        size_t idSalary = rand() % 4;
+        size_t idGender{};
+        (idFirstName < 3) ? idGender = 0 : idGender = 1;
+
+        addWorker(database, std::make_shared<Worker>(firstNames[idFirstName], lastNames[idLastName],
+                                addresses[idAddress], salary[idSalary], personalIds[idPersonalId], genders[idGender]));
+        personalIds.erase(personalIds.begin() + idPersonalId);
+        ++j;
+    }
+}
+
+void removeStudent(std::vector<std::shared_ptr<Person> >& database, const std::shared_ptr<Person> student)
 {
     for (auto it = database.begin(); it < database.end(); ++it) {
         if (*it == student) {
@@ -15,62 +73,62 @@ void removeStudent(std::vector<Student>& database, const Student& student)
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const Student& student)
+void removeAllStudents(std::vector<std::shared_ptr<Person> >& database)
 {
-    os << "Name: " << student.getFirstName() << "\n";
-    os << "Surname: " << student.getLastName() << "\n";
-    os << "Address: " << student.getAddress() << "\n";
-    os << "Student ID:: " << student.getStudentId() << "\n";
-    os << "Personal ID: " << student.getPersonalId() << "\n";
-    os << "Gender: " << student.getGender() << "\n";
-    os << "\n";
-    return os;
-}
-
-void printDatabase(std::vector<Student>& database)
-{
-    for (auto& rec : database) {
-        std::cout << rec;
-    }
-}
-
-Student& findByLastName(std::vector<Student>& database, const std::string& str)
-{
-    for (auto& rec : database) {
-        if (rec.getLastName() == str) {
-            return rec;
+    auto it = database.begin();
+    while (it < database.end()) {
+        if (((*it)->getSalary()).empty()) {
+            removeStudent(database, *it);
+        } else {
+            ++it;
         }
     }
-    throw std::out_of_range("name \"" + str + "\" has not been found");
 }
 
-Student& findByPersonalId(std::vector<Student>& database, const std::string& personalId)
+std::shared_ptr<Person> findByStudentId(std::vector<std::shared_ptr<Person> >& database, const std::string& studentId)
 {
     for (auto& rec : database) {
-        if (rec.getPersonalId() == personalId) {
-            return rec;
-        }
-    }
-    throw std::out_of_range("personalID \"" + personalId + "\" has not been found");
-}
-
-Student& findByStudentId(std::vector<Student>& database, const std::string& studentId)
-{
-    for (auto& rec : database) {
-        if (rec.getStudentId() == studentId) {
+        if (rec->getStudentId() == studentId) {
             return rec;
         }
     }
     throw std::out_of_range("studentID \"" + studentId + "\" has not been found");
 }
 
+void printDatabase(std::vector<std::shared_ptr<Person> >& database)
+{
+    for (auto& rec : database) {
+        std::cout << *rec;
+    }
+}
+
+std::shared_ptr<Person> findByLastName(std::vector<std::shared_ptr<Person> >& database, const std::string& str)
+{
+    for (auto& rec : database) {
+        if (rec->getLastName() == str) {
+            return rec;
+        }
+    }
+    throw std::out_of_range("name \"" + str + "\" has not been found");
+}
+
+std::shared_ptr<Person> findByPersonalId(std::vector<std::shared_ptr<Person> >& database, const std::string& personalId)
+{
+    for (auto& rec : database) {
+        if (rec->getPersonalId() == personalId) {
+            return rec;
+        }
+    }
+    throw std::out_of_range("personalID \"" + personalId + "\" has not been found");
+}
+
 struct lessPersonalId {
-    inline bool operator()(const Student& stud1, const Student& stud2)
+    inline bool operator()(const std::shared_ptr<Person> lhs, const std::shared_ptr<Person> rhs)
     {
-        return (stud1.getPersonalId() < stud2.getPersonalId());
+        return (lhs->getPersonalId() < rhs->getPersonalId());
     }
 };
-void sortByPersonalID(std::vector<Student>& database)
+void sortByPersonalID(std::vector<std::shared_ptr<Person> >& database)
 {
     if (database.empty()) {
         std::cout << "Database is empty!\n";
@@ -80,12 +138,12 @@ void sortByPersonalID(std::vector<Student>& database)
 }
 
 struct lessLastName {
-    inline bool operator()(const Student& stud1, const Student& stud2)
+    inline bool operator()(const std::shared_ptr<Person> lhs, const std::shared_ptr<Person> rhs)
     {
-        return (stud1.getLastName() < stud2.getLastName());
+        return (lhs->getLastName() < rhs->getLastName());
     }
 };
-void sortByLastName(std::vector<Student>& database)
+void sortByLastName(std::vector<std::shared_ptr<Person> >& database)
 {
     if (database.empty()) {
         std::cout << "Database is empty!\n";
@@ -94,7 +152,32 @@ void sortByLastName(std::vector<Student>& database)
     }
 }
 
-ssize_t writeToFile(std::vector<Student>& database, const std::string fileName)
+struct lessSalary {
+    inline bool operator()(const std::shared_ptr<Person> lhs, const std::shared_ptr<Person> rhs)
+    {
+        return (std::stoi(lhs->getSalary()) < std::stoi(rhs->getSalary()));
+    }
+};
+void sortBySalary(std::vector<std::shared_ptr<Person> >& database)
+{
+    if (database.empty()) {
+        std::cout << "Database is empty!\n";
+    } else {
+        std::sort(database.begin(), database.end(), lessSalary());
+    }
+}
+
+void changeSalary(std::shared_ptr<Person>& person, std::string salary)
+{
+    try {
+        person->setSalary(salary);
+
+    } catch (const std::out_of_range& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
+
+ssize_t writeToFile(std::vector<std::shared_ptr<Person> >& database, const std::string fileName)
 {
     std::ofstream fileWrite(fileName);
 
@@ -102,20 +185,15 @@ ssize_t writeToFile(std::vector<Student>& database, const std::string fileName)
         return -1;
     }
 
-    for (const auto& el : database) {
-        fileWrite << "Name: " << el.getFirstName() << " "
-                  << "Surname: " << el.getLastName() << " "
-                  << "Address: " << el.getAddress() << " "
-                  << "Student-ID: " << el.getStudentId() << " "
-                  << "Personal-ID: " << el.getPersonalId() << " "
-                  << "Gender: " << el.getGender() << "\n";
+    for (const auto& rec : database) {
+        fileWrite << *rec;
     }
     fileWrite.close();
 
     return 0;
 }
 
-ssize_t readFromFile(std::vector<Student>& databaseFile, const std::string fileName)
+ssize_t readFromFile(std::vector<std::shared_ptr<Person> >& databaseFile, const std::string fileName)
 {
     std::ifstream fileRead(fileName);
 
@@ -135,30 +213,71 @@ ssize_t readFromFile(std::vector<Student>& databaseFile, const std::string fileN
     }
     fileRead.close();
 
-    std::vector<std::string> fields = { "Name:", "Surname:", "Address:", "Student-ID:", "Personal-ID:", "Gender:" };
+    std::vector<std::string> fields_stud = { "Name:", "Surname:", "Address:", "StudIden:", "Personal-ID:", "Gender:" };
+    std::vector<std::string> fields_work = { "Name:", "Surname:", "Address:", "Earnings:", "Personal-ID:", "Gender:" };
 
     //count all records in the file
-    size_t count{};
-    for (size_t i = 0; (i = temp_all.find((fields[0]), i)) != std::string::npos; i++) {
-        count++;
+    size_t count_stud{};
+    size_t count_work{};
+    for (size_t i = 0; (i = temp_all.find((fields_stud[3]), i)) != std::string::npos; i++) {
+        count_stud++;
+    }
+
+    for (size_t i = 0; (i = temp_all.find((fields_work[3]), i)) != std::string::npos; i++) {
+        count_work++;
     }
 
     size_t i{};
-    while (i < count) {
+    while (i < count_stud) {
         //parse the content of temporary string read from the file
-        addStudent(databaseFile, Student(
-                                     temp_all.substr(temp_all.find(fields[0]) + fields[0].size(), temp_all.find(fields[1]) - temp_all.find(fields[0]) - fields[0].size()), temp_all.substr(temp_all.find(fields[1]) + fields[1].size(), temp_all.find(fields[2]) - temp_all.find(fields[1]) - fields[1].size()), temp_all.substr(temp_all.find(fields[2]) + fields[2].size(), temp_all.find(fields[3]) - temp_all.find(fields[2]) - fields[2].size()), temp_all.substr(temp_all.find(fields[3]) + fields[3].size(), temp_all.find(fields[4]) - temp_all.find(fields[3]) - fields[3].size()), temp_all.substr(temp_all.find(fields[4]) + fields[4].size(), temp_all.find(fields[5]) - temp_all.find(fields[4]) - fields[4].size()), temp_all.substr(temp_all.find(fields[5]) + fields[5].size(), temp_all.find(fields[0], fields[0].size()) - temp_all.find(fields[5]) - fields[5].size())));
+        addStudent(databaseFile, std::make_shared<Student>(
+                                     temp_all.substr(temp_all.find(fields_stud[0]) + fields_stud[0].size(),
+                                         temp_all.find(fields_stud[1]) - temp_all.find(fields_stud[0]) - fields_stud[0].size()),
+                                     temp_all.substr(temp_all.find(fields_stud[1]) + fields_stud[1].size(),
+                                         temp_all.find(fields_stud[2]) - temp_all.find(fields_stud[1]) - fields_stud[1].size()),
+                                     temp_all.substr(temp_all.find(fields_stud[2]) + fields_stud[2].size(),
+                                         temp_all.find(fields_stud[3]) - temp_all.find(fields_stud[2]) - fields_stud[2].size()),
+                                     temp_all.substr(temp_all.find(fields_stud[3]) + fields_stud[3].size(),
+                                         temp_all.find(fields_stud[4]) - temp_all.find(fields_stud[3]) - fields_stud[3].size()),
+                                     temp_all.substr(temp_all.find(fields_stud[4]) + fields_stud[4].size(),
+                                         temp_all.find(fields_stud[5]) - temp_all.find(fields_stud[4]) - fields_stud[4].size()),
+                                     temp_all.substr(temp_all.find(fields_stud[5]) + fields_stud[5].size(),
+                                         temp_all.find(fields_stud[0], fields_stud[0].size()) - temp_all.find(fields_stud[5]) - fields_stud[5].size())));
         //erase read data
-        temp_all.erase(temp_all.begin(), temp_all.begin() + (temp_all.find(fields[5]) - temp_all.find(fields[0]) + fields[5].size() + 1));
+        temp_all.erase(temp_all.begin(), temp_all.begin() + (temp_all.find(fields_stud[5]) - temp_all.find(fields_stud[0]) + fields_stud[5].size() + 1));
         ++i;
     }
+
+    while (i < (count_stud + count_work)) {
+        //parse the content of temporary string read from the file
+        addWorker(databaseFile, std::make_shared<Worker>(
+                                    temp_all.substr(temp_all.find(fields_work[0]) + fields_work[0].size(),
+                                        temp_all.find(fields_work[1]) - temp_all.find(fields_work[0]) - fields_work[0].size()),
+                                    temp_all.substr(temp_all.find(fields_work[1]) + fields_work[1].size(),
+                                        temp_all.find(fields_work[2]) - temp_all.find(fields_work[1]) - fields_work[1].size()),
+                                    temp_all.substr(temp_all.find(fields_work[2]) + fields_work[2].size(),
+                                        temp_all.find(fields_work[3]) - temp_all.find(fields_work[2]) - fields_work[2].size()),
+                                    temp_all.substr(temp_all.find(fields_work[3]) + fields_work[3].size(),
+                                        temp_all.find(fields_work[4]) - temp_all.find(fields_work[3]) - fields_work[3].size()),
+                                    temp_all.substr(temp_all.find(fields_work[4]) + fields_work[4].size(),
+                                        temp_all.find(fields_work[5]) - temp_all.find(fields_work[4]) - fields_work[4].size()),
+                                    temp_all.substr(temp_all.find(fields_work[5]) + fields_work[5].size(),
+                                        temp_all.find(fields_work[0], fields_work[0].size()) - temp_all.find(fields_work[5]) - fields_work[5].size())));
+        //erase read data
+        temp_all.erase(temp_all.begin(), temp_all.begin() + (temp_all.find(fields_work[5]) - temp_all.find(fields_work[0]) + fields_work[5].size() + 1));
+        ++i;
+    }
+
     return 0;
 }
 
 bool validatePersonalId(const std::string& personalId)
 {
-    std::vector<size_t> numbers{};
+    if (personalId.size() < 11) {
+        return false;
+    }
 
+    std::vector<size_t> numbers{};
     for (auto& el : personalId) {
         numbers.push_back(el - '0');
     }
@@ -198,8 +317,22 @@ bool validatePersonalId(const std::string& personalId)
     else
         checksum = 0;
 
-    if (numbers[10] == checksum)
-        return true;
-    else
+    return (numbers[10] == checksum);
+}
+
+bool compareDatabases(std::vector<std::shared_ptr<Person> >& lhs, std::vector<std::shared_ptr<Person> >& rhs)
+{
+    size_t sizeLhs = lhs.size();
+    if (sizeLhs != rhs.size()) {
         return false;
+    }
+
+    size_t i = 0;
+    while (i < sizeLhs) {
+        if (!(*(lhs[i]) == *(rhs[i]))) {
+            return false;
+        }
+        ++i;
+    }
+    return true;
 }

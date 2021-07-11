@@ -1,22 +1,27 @@
-#include "student.hpp"
+#include "person.hpp"
 
 int main()
 {
-    std::vector<Student> database{};
+    std::vector<std::shared_ptr<Person> > database{};
 
     while (1) {
         std::cout << "\n*** Students database ***" << std::endl;
         std::cout << "What'd you like to do?" << std::endl;
         std::cout << "1. Initialize a student list\n"
-                  << "2. Show current student list\n"
-                  << "3. Remove student from the list\n"
-                  << "4. Find student by surname\n"
-                  << "5. Find student by personal id\n"
-                  << "6. Sort student list by personal id\n"
-                  << "7. Sort student list by surname\n"
-                  << "8. Save data to the file\n"
-                  << "9. Read data from the file\n"
-                  << "10. Run test function\n"
+                  << "2. Add new student to the list\n"
+                  << "3. Add new worker to the list\n"
+                  << "4. Show current list\n"
+                  << "5. Remove student from the list\n"
+                  << "6. Find person by surname\n"
+                  << "7. Find person by personal id\n"
+                  << "8. Modify salary by personal id\n"
+                  << "9. Sort list of people by personal id\n"
+                  << "10. Sort list of people by surname\n"
+                  << "11. Sort list of people by salary (students will be deleted!)\n"
+                  << "12. Save data to the file\n"
+                  << "13. Read data from the file\n"
+                  << "14. Run test function\n"
+
                   << "Press any other button to exit\n";
         try {
             size_t option{};
@@ -25,53 +30,109 @@ int main()
 
             switch (option) {
             case 1: {
-                std::cout << "Some new students have been added, "
+                std::cout << "New people have been added, "
                           << "all values are hardcoded, you have nothing to do here!\n";
-                addStudent(database, Student("Jan", "Kowalski", "ul.Cwiartki", "111222", "95062887786", "M"));
-                addStudent(database, Student("Ewa", "Dygant", "al.Jerozolimskie", "777766", "04283145461", "F"));
-                addStudent(database, Student("Karol", "Krawczyk", "ul.Wolska", "333333", "72082968248", "M"));
-                addStudent(database, Student("Marcin", "Mroczek", "ul.Woronicza", "222333", "49072852861", "M"));
-                addStudent(database, Student("Jola", "Cygan", "ul.Bursztynowa", "987789", "78081951876", "F"));
-                addStudent(database, Student("Ela", "Kowal", "al.Gwiazd", "111444", "83081899446", "F"));
+                fulfillDatabase(database);
                 break;
             }
             case 2: {
+                std::cout << "Provide first name of the student that you want to add: \n";
+                std::string firstName{};
+                std::cin >> firstName;
+                std::cout << "Provide last name of the student that you want to add: \n";
+                std::string lastName{};
+                std::cin >> lastName;
+                std::cout << "Provide address of the student that you want to add: \n";
+                std::string address{};
+                std::cin >> address;
+                std::cout << "Provide studentID of the student that you want to add: \n";
+                std::string studentId{};
+                std::cin >> studentId;
+                std::cout << "Provide personalId of the student that you want to add: \n";
+                std::string personalId{};
+                std::cin >> personalId;
+                if (!validatePersonalId(personalId)) {
+                    std::cerr << "Wrong personal ID! Student not added!\n";
+                    break;
+                }
+                std::cout << "Provide gender of the student that you want to add (F/M): \n";
+                std::string gender{};
+                std::cin >> gender;
+                if (gender != "M" && gender != "F") {
+                    std::cerr << "There are only two genders - M or F! Student not added!\n";
+                    break;
+                }
+                addStudent(database, std::make_shared<Student>(firstName, lastName, address, studentId, personalId, gender));
+                break;
+            }
+            case 3: {
+                std::cout << "Provide first name of the worker that you want to add: \n";
+                std::string firstName{};
+                std::cin >> firstName;
+                std::cout << "Provide last name of the worker that you want to add: \n";
+                std::string lastName{};
+                std::cin >> lastName;
+                std::cout << "Provide address of the worker that you want to add: \n";
+                std::string address{};
+                std::cin >> address;
+                std::cout << "Provide salary of the worker that you want to add: \n";
+                std::string salary{};
+                std::cin >> salary;
+                std::cout << "Provide personalId of the worker that you want to add: \n";
+                std::string personalId{};
+                std::cin >> personalId;
+                if (!validatePersonalId(personalId)) {
+                    std::cerr << "Wrong personal ID! Worker not added!\n";
+                    break;
+                }
+                std::cout << "Provide gender of the worker that you want to add (F/M): \n";
+                std::string gender{};
+                std::cin >> gender;
+                if (gender != "M" && gender != "F") {
+                    std::cerr << "There are only two genders - M or F! Worker not added!\n";
+                    break;
+                }
+                addWorker(database, std::make_shared<Worker>(firstName, lastName, address, salary, personalId, gender));
+                break;
+            }
+            case 4: {
                 std::cout << "Here you can find full list of the students:\n";
                 printDatabase(database);
                 break;
             }
-            case 3: {
+            case 5: {
                 std::cout << "Provide studentID of the student that you want to remove: \n";
                 std::string studentId{};
                 std::cin >> studentId;
                 try {
                     removeStudent(database, findByStudentId(database, studentId));
                     std::cout << "Student with ID: "
-                              << "studentId"
+                              << studentId
                               << " has been deleted from the list!\n";
                 } catch (const std::out_of_range& e) {
                     std::cerr << "Error: " << e.what() << std::endl;
                 }
+
                 break;
             }
-            case 4: {
-                std::cout << "Provide surname of the student that you want to display: \n";
+            case 6: {
+                std::cout << "Provide surname of the person that you want to display: \n";
                 std::string surname{};
                 std::cin >> surname;
                 try {
-                    std::cout << findByLastName(database, surname);
+                    std::cout << *(findByLastName(database, surname));
                 } catch (const std::out_of_range& e) {
                     std::cerr << "Error: " << e.what() << std::endl;
                 }
                 break;
             }
-            case 5: {
-                std::cout << "Provide personal ID of the student that you want to display: \n";
+            case 7: {
+                std::cout << "Provide personal ID of the person that you want to display: \n";
                 std::string personalId{};
                 std::cin >> personalId;
                 if (validatePersonalId(personalId)) {
                     try {
-                        std::cout << findByPersonalId(database, personalId);
+                        std::cout << *(findByPersonalId(database, personalId));
                     } catch (const std::out_of_range& e) {
                         std::cerr << "Error: " << e.what() << std::endl;
                     }
@@ -80,19 +141,43 @@ int main()
                 }
                 break;
             }
-            case 6: {
+            case 8: {
+                std::cout << "Provide personal ID of the person that's salary you want to modify: \n";
+                std::string personalId{};
+                std::cin >> personalId;
+
+                std::cout << "Provide a new salary value: \n";
+                std::string salary{};
+                std::cin >> salary;
+                if (validatePersonalId(personalId)) {
+                    std::shared_ptr<Person> ptr = findByPersonalId(database, personalId);
+                    changeSalary(ptr, salary);
+
+                } else {
+                    std::cout << "STOP! You have provided incorrect personal ID number!\n";
+                }
+                break;
+            }
+            case 9: {
                 std::cout << "Sorted list by personal ID looks as follows: \n";
                 sortByPersonalID(database);
                 printDatabase(database);
                 break;
             }
-            case 7: {
+            case 10: {
                 std::cout << "Sorted list by surname looks as follows: \n";
                 sortByLastName(database);
                 printDatabase(database);
                 break;
             }
-            case 8: {
+            case 11: {
+                removeAllStudents(database);
+                std::cout << "Sorted list by salary looks as follows: \n";
+                sortBySalary(database);
+                printDatabase(database);
+                break;
+            }
+            case 12: {
                 std::cout << "Provide a file name: \n";
                 std::string fileName{};
                 std::cin >> fileName;
@@ -101,7 +186,7 @@ int main()
                 }
                 break;
             }
-            case 9: {
+            case 13: {
                 std::cout << "Provide a file name: \n";
                 std::string fileName{};
                 std::cin >> fileName;
@@ -111,7 +196,7 @@ int main()
                 }
                 break;
             }
-            case 10: {
+            case 14: {
                 std::cout << "Test result: " << (testFunction() ? "OK\n" : "FAIL\n");
                 break;
             }
