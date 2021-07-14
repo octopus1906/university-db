@@ -1,0 +1,26 @@
+name: university-db
+on:
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+    - dev
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      path: ./build
+    steps:
+    - name: Checking out the code
+      uses: actions/checkout@master
+    
+    - name: Creating build dir
+      run: mkdir ${{env.path}}
+
+    - name: Compilation
+      working-directory: ${{env.path}}
+      run: |
+        cmake ..
+        make
