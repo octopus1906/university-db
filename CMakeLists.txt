@@ -4,7 +4,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SRC utils.cpp test.cpp)
-set(FLAGS -Wall -Werror -Wextra -Wpedantic -Wconversion -O3)
+
+set(FLAGS -Wall -Werror -Wextra -Wpedantic -O3)
 
 project(universityDB)
 
